@@ -23,7 +23,7 @@ class VkApiHandler:
         try:
             self.json, self.export_dict = self.get_photo_json()
         except:
-            print(f'Файлы для загрузки получены не были')
+            print(f'VK: файлы для загрузки получены не были')
 
     def find_photo_max_size(self, photos_dict):
         """Метод возвращает ссылку на фото максимального размера"""
@@ -71,10 +71,10 @@ class VkApiHandler:
                 response = requests.get(url, params=params)
                 data = response.json()['response']
             except KeyError as ex:
-                print(f'При получении массива фото произошла ошибка: {response.json()["error"]["error_msg"]}. Код ошибки: {response.json()["error"]["error_code"]}')
+                print(f'VK: при получении массива фото произошла ошибка: {response.json()["error"]["error_msg"]}! Код ошибки: {response.json()["error"]["error_code"]}')
                 return None
             except:
-                print(f'При получении массива фото произошла, неизвестная ошибка.')
+                print(f'VK: при получении массива фото произошла, неизвестная ошибка!')
                 return None
             data_items.extend(data['items'])
             params['offset'] += params['count']
