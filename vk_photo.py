@@ -12,14 +12,15 @@ load_dotenv()
 class VkApiHandler:
 
     base_url = 'https://api.vk.com/method/'
-
-    def __init__(self, access_token, id, count = 1000, version='5.131'):
+    
+    def __init__(self, access_token, id, method, count=1000, version='5.131'):
         self.params = {
             'access_token': access_token,
             'v': version
         }
         self.id = id
         self.count = count
+        self.method = method
         try:
             self.json, self.export_dict = self.get_photo_json()
         except:
@@ -48,10 +49,10 @@ class VkApiHandler:
         time_conv = datetime.datetime.fromtimestamp(time_unix)
         str_time = time_conv.strftime('%Y-%m-%d_%H-%M-%S')
         return str_time
-    
+       
     def get_photo_info(self):
         """Метод для получения количества фотографий и массива фотографий"""
-        url = self.base_url + 'photos.get'
+        url = self.base_url + self.method
         params = {
             'album_id': 'profile',
             'extended': 1,
@@ -74,7 +75,7 @@ class VkApiHandler:
                 print(f'VK: при получении массива фото произошла ошибка: {response.json()["error"]["error_msg"]}! Код ошибки: {response.json()["error"]["error_code"]}')
                 return None
             except:
-                print(f'VK: при получении массива фото произошла, неизвестная ошибка!')
+                print(f'VK: ошибка в методе get_photo_info!')
                 return None
             data_items.extend(data['items'])
             params['offset'] += params['count']
@@ -88,6 +89,7 @@ class VkApiHandler:
         try:
             photo_count, photo_items = self.get_photo_info()
         except:
+            print('Исключение в методе get_photo_params')
             return None
         result = {}
         for i in range(photo_count):
@@ -123,4 +125,5 @@ class VkApiHandler:
                     json_list.append({'file_name': file_name, 'size':value['size']})                
             return json_list, upload_dict
         except:
+            print('get_photo_json')
             return None          
