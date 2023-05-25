@@ -9,7 +9,6 @@ class YandexDisk:
     def __init__(self, folder_name, token, num=5):
         self.token = token
         self.file_upload_num = num
-        self.url = 'https://cloud-api.yandex.net/v1/disk/resources/upload'
         self.headers = self.get_headers()
         self.folder = self.create_folder(folder_name)
 
@@ -47,6 +46,7 @@ class YandexDisk:
     
     def create_copy(self, dict_files):
         """Метод загружает фото на Я-диск"""
+        url = 'https://cloud-api.yandex.net/v1/disk/resources/upload'
         content_in_folder = self.folder_contents(self.folder)
         counter = 0
         for key, i in zip(dict_files.keys(), tqdm(range(self.file_upload_num))):
@@ -55,7 +55,7 @@ class YandexDisk:
                     params = {'path': f'{self.folder}/{key}',
                             'url': dict_files[key],
                             'overwrite': 'false'}
-                    response = requests.post(self.url, headers=self.headers, params=params)
+                    response = requests.post(url, headers=self.headers, params=params)
                     counter += 1
                 else:
                     print(f'В папке {self.folder} уже существует файл {key}')
